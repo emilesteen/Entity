@@ -13,6 +13,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation("org.mongodb:mongo-java-driver:3.12.10")
 }
 
 tasks.test {
