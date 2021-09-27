@@ -5,7 +5,7 @@ import org.bson.types.ObjectId
 import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty
 
-abstract class Entity<E>(open val _id: ObjectId) {
+abstract class Entity(open val _id: ObjectId) {
     companion object {
         private val client: MongoClient? = null
 
@@ -50,7 +50,7 @@ abstract class Entity<E>(open val _id: ObjectId) {
         }
     }
 
-    inline fun <reified E>save(): E {
+    inline fun <reified E: Entity>save(): E {
         getClient()
             .getDatabase(getDatabaseName<E>())
             .getCollection(getCollectionName<E>())
@@ -71,7 +71,7 @@ abstract class Entity<E>(open val _id: ObjectId) {
     }
 
     override fun equals(other: Any?): Boolean {
-        return if (other is Entity<*>) {
+        return if (other is Entity) {
             this._id == other._id
         } else {
             false

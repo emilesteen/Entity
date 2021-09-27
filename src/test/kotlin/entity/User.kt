@@ -12,7 +12,7 @@ class User(
     var lastName: String,
     var age: Number,
     override val _id: ObjectId = ObjectId()
-) : Entity<User>(_id) {
+) : Entity(_id) {
     companion object {
         val databaseName = ""
         val collectionName = ""
