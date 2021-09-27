@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="EntityTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-09-27T14:49:21" hostname="Emiles-MacBook-Pro.local" time="0.574">
+<testsuite name="EntityTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-09-27T21:27:35" hostname="Emiles-MacBook-Pro.local" time="0.74">
   <properties/>
-  <testcase name="testModel" classname="EntityTest" time="0.574"/>
-  <system-out><![CDATA[Hello
-]]></system-out>
-  <system-err><![CDATA[Sep 27, 2021 4:49:21 PM com.mongodb.diagnostics.logging.JULLogger log
+  <testcase name="testModelFind" classname="EntityTest" time="0.74"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[Sep 27, 2021 11:27:36 PM com.mongodb.diagnostics.logging.JULLogger log
 INFO: Cluster created with settings {hosts=[127.0.0.1:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
-Sep 27, 2021 4:49:21 PM com.mongodb.diagnostics.logging.JULLogger log
-INFO: Opened connection [connectionId{localValue:1, serverValue:16}] to 127.0.0.1:27017
-Sep 27, 2021 4:49:21 PM com.mongodb.diagnostics.logging.JULLogger log
-INFO: Monitor thread successfully connected to server with description ServerDescription{address=127.0.0.1:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[5, 0, 2]}, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=2593554}
-Sep 27, 2021 4:49:22 PM com.mongodb.diagnostics.logging.JULLogger log
-INFO: Opened connection [connectionId{localValue:2, serverValue:17}] to 127.0.0.1:27017
+Sep 27, 2021 11:27:36 PM com.mongodb.diagnostics.logging.JULLogger log
+INFO: Cluster description not yet available. Waiting for 30000 ms before timing out
+Sep 27, 2021 11:27:36 PM com.mongodb.diagnostics.logging.JULLogger log
+INFO: Opened connection [connectionId{localValue:1, serverValue:34}] to 127.0.0.1:27017
+Sep 27, 2021 11:27:36 PM com.mongodb.diagnostics.logging.JULLogger log
+INFO: Monitor thread successfully connected to server with description ServerDescription{address=127.0.0.1:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[5, 0, 2]}, minWireVersion=0, maxWireVersion=13, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=2294931}
+Sep 27, 2021 11:27:36 PM com.mongodb.diagnostics.logging.JULLogger log
+INFO: Opened connection [connectionId{localValue:2, serverValue:35}] to 127.0.0.1:27017
 ]]></system-err>
 </testsuite>

@@ -3,11 +3,18 @@ package entity
 import CollectionName
 import DatabaseName
 import Entity
+import org.bson.types.ObjectId
 
 @DatabaseName("user")
 @CollectionName("user")
-class User(var firstName: String, var lastName: String, var age: Number) : Entity<User>() {
-    public fun sayHello() {
-        println("Hello")
+class User(
+    var firstName: String,
+    var lastName: String,
+    var age: Number,
+    override val _id: ObjectId = ObjectId()
+) : Entity<User>(_id) {
+    companion object {
+        val databaseName = ""
+        val collectionName = ""
     }
 }
