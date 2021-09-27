@@ -33,5 +33,5 @@ val user = User("Emile", "Steenkamp", 23).save<User>()
 
 Find an Entity by its `_id`:
 ```kotlin
-Entity.findById<User>(ObjectId("6151dcead7627735cba71645"))
+val user = Entity.findById<User>(ObjectId("6151dcead7627735cba71645"))
 ```
