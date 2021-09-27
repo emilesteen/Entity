@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bb1124ba-b529-43c7-8f0e-950b00578df3" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Entity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Entity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/EntityTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/EntityTest.kt" afterDir="false" />
-    </list>
+    <list default="true" id="bb1124ba-b529-43c7-8f0e-950b00578df3" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -119,34 +116,55 @@
       <command value="gradle dependencies" />
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.EntityTest.testModelFind">
-    <configuration name="Entity [dependencies]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+  <component name="RunManager" selected="Gradle.EntityTest.testEntityToString">
+    <configuration name="EntityTest.testEntity" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
+        <option name="scriptParameters" value="--tests &quot;EntityTest.testEntity&quot;" />
         <option name="taskDescriptions">
           <list />
         </option>
         <option name="taskNames">
           <list>
-            <option value="dependencies" />
+            <option value=":test" />
           </list>
         </option>
-        <option name="vmOptions" value="" />
+        <option name="vmOptions" />
       </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="EntityTest.testModel" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="EntityTest.testEntityEquality" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--tests &quot;EntityTest.testModel&quot;" />
+        <option name="scriptParameters" value="--tests &quot;EntityTest.testEntityEquality&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="EntityTest.testEntityToString" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;EntityTest.testEntityToString&quot;" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -204,20 +222,13 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="ClientKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="ClientKt" />
-      <module name="Entity.main" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.EntityTest.testEntityToString" />
+        <item itemvalue="Gradle.EntityTest.testEntityEquality" />
+        <item itemvalue="Gradle.EntityTest.testEntity" />
         <item itemvalue="Gradle.EntityTest.testModelFind" />
         <item itemvalue="Gradle.EntityTest.testModelCreate" />
-        <item itemvalue="Gradle.EntityTest.testModel" />
-        <item itemvalue="Kotlin.ClientKt" />
-        <item itemvalue="Gradle.Entity [dependencies]" />
       </list>
     </recent_temporary>
   </component>
@@ -231,16 +242,5 @@
       <updated>1632392442730</updated>
     </task>
     <servers />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/Entity.kt</url>
-          <line>77</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
