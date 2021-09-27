@@ -1,12 +1,11 @@
 import com.mongodb.BasicDBObject
 import com.mongodb.MongoClient
 import org.bson.Document
-import org.bson.json.JsonWriterSettings
 import org.bson.types.ObjectId
 import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty
 
-abstract class Entity<T>(open val _id: ObjectId) {
+abstract class Entity<E>(open val _id: ObjectId) {
     companion object {
         private val client: MongoClient? = null
 
@@ -51,24 +50,16 @@ abstract class Entity<T>(open val _id: ObjectId) {
         }
     }
 
-    fun save(): T {
+    inline fun <reified E>save(): E {
         getClient()
-            .getDatabase(this.getDatabaseName())
-            .getCollection(this.getCollectionName())
+            .getDatabase(getDatabaseName<E>())
+            .getCollection(getCollectionName<E>())
             .insertOne(this.generateDocument())
 
-        return this as T
+        return this as E
     }
 
-    private fun getDatabaseName(): String {
-        return this.javaClass.kotlin.annotations.filterIsInstance<DatabaseName>().first().databaseName
-    }
-
-    private fun getCollectionName(): String {
-        return this.javaClass.kotlin.annotations.filterIsInstance<CollectionName>().first().collectionName
-    }
-
-    private fun generateDocument(): Document {
+    fun generateDocument(): Document {
         val document = Document()
         val kProperties = this.javaClass.kotlin.members.filterIsInstance<KProperty<*>>()
 
@@ -89,6 +80,10 @@ abstract class Entity<T>(open val _id: ObjectId) {
 
     override fun toString(): String {
         return this.generateDocument().toJson()
+    }
+
+    override fun hashCode(): Int {
+        return _id.hashCode()
     }
 }
 

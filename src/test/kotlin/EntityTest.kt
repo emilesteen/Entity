@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 class EntityTest {
     @Test
     fun testEntityCreate() {
-        User("Emile", "Steenkamp", 23).save()
+        User("Emile", "Steenkamp", 23).save<User>()
     }
 
     @Test
@@ -16,7 +16,7 @@ class EntityTest {
 
     @Test
     fun testEntityEquality() {
-        val user1 = User("Wihan", "Nel", 22).save()
+        val user1 = User("Wihan", "Nel", 22).save<User>()
         val user2 = Entity.findById<User>(user1._id)
 
         assertEquals(user1, user2)
