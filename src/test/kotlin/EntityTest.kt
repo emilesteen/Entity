@@ -1,17 +1,31 @@
 import entity.User
 import org.bson.types.ObjectId
 import org.junit.Test
+import kotlin.test.assertEquals
 
 class EntityTest {
     @Test
-    fun testModelCreate() {
+    fun testEntityCreate() {
         User("Emile", "Steenkamp", 23).save()
     }
 
     @Test
-    fun testModelFind() {
-        val user = Entity.findById<User>(ObjectId("6151dcead7627735cba71645"))
+    fun testEntityFind() {
+        Entity.findById<User>(ObjectId("6151dcead7627735cba71645"))
+    }
 
-        return
+    @Test
+    fun testEntityEquality() {
+        val user1 = User("Wihan", "Nel", 22).save()
+        val user2 = Entity.findById<User>(user1._id)
+
+        assertEquals(user1, user2)
+    }
+
+    @Test
+    fun testEntityToString() {
+        val user = User("Wihan", "Nel", 22)
+
+        println(user.toString())
     }
 }

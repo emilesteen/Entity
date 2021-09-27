@@ -1,6 +1,7 @@
 import com.mongodb.BasicDBObject
 import com.mongodb.MongoClient
 import org.bson.Document
+import org.bson.json.JsonWriterSettings
 import org.bson.types.ObjectId
 import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty
@@ -76,6 +77,18 @@ abstract class Entity<T>(open val _id: ObjectId) {
         }
 
         return document
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return if (other is Entity<*>) {
+            this._id == other._id
+        } else {
+            false
+        }
+    }
+
+    override fun toString(): String {
+        return this.generateDocument().toJson()
     }
 }
 
