@@ -1,5 +1,6 @@
 import com.mongodb.MongoClient
 import org.bson.Document
+import kotlin.reflect.KProperty
 
 abstract class Entity<T> {
     companion object {
@@ -30,7 +31,14 @@ abstract class Entity<T> {
 
     private fun generateDocument(): Document
     {
-        return Document()
+        val document = Document()
+        val kProperties = this.javaClass.kotlin.members.filterIsInstance<KProperty<*>>()
+
+        for (kProperty in kProperties) {
+            document[kProperty.name] = kProperty.getter.call(this)
+        }
+
+        return document
     }
 }
 
