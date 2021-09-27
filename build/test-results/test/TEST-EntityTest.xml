@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="EntityTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-09-27T21:56:18" hostname="Emiles-MacBook-Pro.local" time="0.361">
-  <properties/>
-  <testcase name="testEntityToString" classname="EntityTest" time="0.361"/>
-  <system-out><![CDATA[{"_id": {"$oid": "61523e0245ca92247f107ea6"}, "age": 22, "firstName": "Wihan", "lastName": "Nel"}
-]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
