@@ -33,6 +33,11 @@ enum class UserStatus {
 class UserName(val firstName: String, val lastName: String) {}
 ```
 
+After defining an Entity, you can easily create and save an entity using:
+```kotlin
+val user: User = User(null, UserName("Emile", "Steenkamp"), 23).save()
+```
+
 The above defined `User` object will be saved in the database as:
 ```json
 {
@@ -46,12 +51,7 @@ The above defined `User` object will be saved in the database as:
 }
 ```
 
-After defining an Entity, you can easily create and save an entity using:
-```kotlin
-val user: User = User(null, UserName("Emile", "Steenkamp"), 23).save()
-```
-
-Find an Entity by its `_id`:
+After saving the object, we can find an Entity by its `_id`:
 ```kotlin
 val user: User = Entity.findById(ObjectId("6151dcead7627735cba71645"))
 ```
