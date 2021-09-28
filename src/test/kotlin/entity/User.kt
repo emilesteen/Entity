@@ -9,8 +9,7 @@ import org.bson.types.ObjectId
 @CollectionName("user")
 class User(
     override val _id: ObjectId?,
-    val firstName: String,
-    val lastName: String,
+    val name: UserName,
     val age: Number,
     var status: UserStatus = UserStatus.ACTIVE
 ) : Entity(_id)
@@ -19,3 +18,5 @@ enum class UserStatus {
     ACTIVE,
     INACTIVE
 }
+
+class UserName(val firstName: String, val lastName: String) {}

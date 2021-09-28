@@ -1,4 +1,5 @@
 import entity.User
+import entity.UserName
 import entity.UserStatus
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -7,16 +8,18 @@ import kotlin.test.assertNotEquals
 class EntityTest {
     @Test
     fun testEntityCreate() {
-        var user = User(null, "Emile", "Steenkamp", 23).save<User>()
-
+        var user = User(null, UserName("Emile", "Steenkamp"), 23).save<User>()
         user = Entity.findById(user.getId())
 
-        return
+        assertEquals("Emile", user.name.firstName)
+        assertEquals("Steenkamp", user.name.lastName)
+        assertEquals(23, user.age)
+        assertEquals(UserStatus.ACTIVE, user.status)
     }
 
     @Test
     fun testEntityUpdate() {
-        var user = User(null, "Emile", "Mostert", 25).save<User>()
+        var user = User(null, UserName("Emile", "Mostert"), 25).save<User>()
         user = Entity.findById(user.getId())
 
         assertEquals(UserStatus.ACTIVE, user.status)
@@ -30,7 +33,7 @@ class EntityTest {
 
     @Test
     fun testEntityEquality() {
-        val user1 = User(null, "Wihan", "Nel", 22).save<User>()
+        val user1 = User(null, UserName("Wihan", "Nel"), 22).save<User>()
         val user2 = Entity.findById<User>(user1.getId())
 
         assertEquals(user1, user2)
@@ -38,13 +41,13 @@ class EntityTest {
 
     @Test
     fun testEntityEqualityOnNullId() {
-        val user1 = User(null, "Gerrit", "Burger", 23)
-        val user2 = User(null, "Wikis", "Van der Merwe", 26)
+        val user1 = User(null, UserName("Gerrit", "Burger"), 23)
+        val user2 = User(null, UserName("Wikus", "Van der Merwe"), 26)
 
         assertNotEquals(user1, user2)
         assertNotEquals(user2, user1)
 
-        val user3 = User(null, "Nicholas", "Van Huysteen", 24)
+        val user3 = User(null, UserName("Nicholas", "Van Huysteen"), 24)
 
         assertNotEquals(user1, user3)
         assertNotEquals(user3, user1)
@@ -52,7 +55,7 @@ class EntityTest {
 
     @Test
     fun testEntityToString() {
-        val user = User(null, "Willem", "Aggenbach", 22)
+        val user = User(null, UserName("Willem", "Aggenbach"), 22)
 
         println(user.toString())
     }

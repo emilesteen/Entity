@@ -27,7 +27,7 @@ abstract class Entity(open val _id: ObjectId?) {
             if (document == null) {
                 throw Exception("Document not found")
             } else {
-                return createFromDocument(document)
+                return createFromDocument(document, E::class.constructors.first())
             }
         }
 
@@ -39,39 +39,48 @@ abstract class Entity(open val _id: ObjectId?) {
             return E::class.annotations.filterIsInstance<CollectionName>().first().collectionName
         }
 
+        inline fun <reified E>createFromDocument(document: Document, constructor: KFunction<*>): E {
+            val arguments = generateArguments(document, constructor)
+
+            return constructor.callBy(arguments) as E
+        }
+
         @OptIn(ExperimentalStdlibApi::class)
-        inline fun <reified E>createFromDocument(document: Document): E {
+        fun generateArguments(document: Document, constructor: KFunction<*>): Map<KParameter, Any?> {
             val arguments = mutableMapOf<KParameter, Any?>()
-            val constructor = E::class.constructors.first()
 
             for (parameter in constructor.parameters) {
                 val type = parameter.type
 
                 arguments[parameter] = when {
-                    type.isSubtypeOf(typeOf<Enum<*>>()) -> getEnumArgument(document, parameter, type)
-                    else -> document[parameter.name]
+                    type.isSubtypeOf(typeOf<ObjectId?>()) -> document[parameter.name]
+                    type.isSubtypeOf(typeOf<Number?>()) -> document[parameter.name]
+                    type.isSubtypeOf(typeOf<String?>()) -> document[parameter.name]
+                    type.isSubtypeOf(typeOf<Boolean?>()) -> document[parameter.name]
+                    type.isSubtypeOf(typeOf<Enum<*>?>()) -> getEnumArgument(document, parameter, type)
+                    type.isSubtypeOf(typeOf<Array<*>?>()) -> arrayOf<Any>()
+                    else -> createFromDocument(
+                        document[parameter.name] as Document,
+                        (type.classifier as KClass<*>).constructors.first()
+                    )
                 }
             }
 
-            return constructor.callBy(arguments)
+            return arguments
         }
 
         fun getEnumArgument(document: Document, parameter: KParameter, type: KType): Enum<*> {
-            val classifier = type.classifier
+            val function = (type.classifier as KClass<*>)
+                .staticFunctions
+                .find { staticFunction -> staticFunction.name == "values" }
+            val values = function!!.call()
 
-            if (classifier == null) {
-                throw Exception()
+            if (values is Array<*>) {
+                val index: Int = document[parameter.name] as Int
+
+                return values[index] as Enum<*>
             } else {
-                val function = (classifier as KClass<*>).staticFunctions.find { staticFunction -> staticFunction.name == "values" }
-                val values = function!!.call()
-
-                if (values is Array<*>) {
-                    val index: Int = document[parameter.name] as Int
-
-                    return values[index] as Enum<*>
-                } else {
-                    throw Exception()
-                }
+                throw Exception()
             }
         }
 
