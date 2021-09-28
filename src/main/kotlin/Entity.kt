@@ -5,7 +5,7 @@ import org.bson.types.ObjectId
 import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty
 
-abstract class Entity(open val _id: ObjectId) {
+abstract class Entity(open val _id: ObjectId?) {
     companion object {
         private val client: MongoClient? = null
 
@@ -14,13 +14,13 @@ abstract class Entity(open val _id: ObjectId) {
         }
 
         inline fun <reified E>findById(_id: ObjectId): E {
-            val query = BasicDBObject();
-            query["_id"] = _id
+            val filter = BasicDBObject();
+            filter["_id"] = _id
 
             val document = getClient()
                 .getDatabase(getDatabaseName<E>())
                 .getCollection(getCollectionName<E>())
-                .find(query)
+                .find(filter)
                 .first()
 
             if (document == null) {
@@ -48,38 +48,100 @@ abstract class Entity(open val _id: ObjectId) {
 
             return constructor.callBy(arguments)
         }
+
+        fun generateDocument(entity: Any): Document {
+            val document = Document()
+            val kProperties = entity.javaClass.kotlin.members.filterIsInstance<KProperty<*>>()
+
+            for (kProperty in kProperties) {
+                document[kProperty.name] = kProperty.getter.call(entity)
+            }
+
+            return document
+        }
+    }
+
+    fun getId(): ObjectId
+    {
+        val id = this._id
+
+        if (id == null) {
+            throw Exception("The Entity does not have an id")
+        } else {
+            return id
+        }
     }
 
     inline fun <reified E: Entity>save(): E {
+        return if (this._id == null) {
+            this.saveInsert()
+        } else {
+            this.saveReplace()
+        }
+    }
+
+    inline fun <reified E: Entity>saveInsert(): E {
+        val arguments = mutableMapOf<KParameter, Any?>()
+        val constructor = E::class.constructors.first()
+        val properties = this.javaClass.kotlin.members.filterIsInstance<KProperty<*>>()
+
+        for (parameter in constructor.parameters) {
+            if (parameter.name == "_id") {
+                arguments[parameter] = ObjectId()
+            } else {
+                val property = properties.find { member -> member.name == parameter.name }
+
+                if (property == null) {
+                    throw Exception("Property not found on object")
+                } else {
+                    arguments[parameter] = property.getter.call(this)
+                }
+            }
+        }
+
+        val entity = constructor.callBy(arguments)
+
         getClient()
             .getDatabase(getDatabaseName<E>())
             .getCollection(getCollectionName<E>())
-            .insertOne(this.generateDocument())
+            .insertOne(generateDocument(entity))
+
+        return entity
+    }
+
+    inline fun <reified E>saveReplace(): E
+    {
+        val filter = BasicDBObject();
+        filter["_id"] = this.getId()
+
+        getClient()
+            .getDatabase(getDatabaseName<E>())
+            .getCollection(getCollectionName<E>())
+            .replaceOne(filter, generateDocument(this))
 
         return this as E
     }
 
-    fun generateDocument(): Document {
-        val document = Document()
-        val kProperties = this.javaClass.kotlin.members.filterIsInstance<KProperty<*>>()
-
-        for (kProperty in kProperties) {
-            document[kProperty.name] = kProperty.getter.call(this)
-        }
-
-        return document
-    }
-
     override fun equals(other: Any?): Boolean {
         return if (other is Entity) {
-            this._id == other._id
+            when {
+                this._id == null -> {
+                    false
+                }
+                other._id == null -> {
+                    false
+                }
+                else -> {
+                    this._id == other._id
+                }
+            }
         } else {
             false
         }
     }
 
     override fun toString(): String {
-        return this.generateDocument().toJson()
+        return generateDocument(this).toJson()
     }
 
     override fun hashCode(): Int {

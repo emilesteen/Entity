@@ -8,8 +8,9 @@ import org.bson.types.ObjectId
 @DatabaseName("user")
 @CollectionName("user")
 class User(
-    var firstName: String,
-    var lastName: String,
-    var age: Number,
-    override val _id: ObjectId = ObjectId()
+    override val _id: ObjectId?,
+    val firstName: String,
+    val lastName: String,
+    var nickName: String,
+    val age: Number
 ) : Entity(_id)
