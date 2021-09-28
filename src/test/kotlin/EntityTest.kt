@@ -26,7 +26,7 @@ class EntityTest {
         assertEquals(UserStatus.ACTIVE, user.status)
 
         user.status = UserStatus.INACTIVE
-        user.save<User>()
+        user = user.save()
         user = Entity.findById(user.getId())
 
         assertEquals(UserStatus.INACTIVE, user.status)

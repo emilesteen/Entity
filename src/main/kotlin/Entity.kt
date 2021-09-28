@@ -67,7 +67,7 @@ abstract class Entity(open val _id: ObjectId?) {
                 type.isSubtypeOf(typeOf<String?>()) -> documentValue
                 type.isSubtypeOf(typeOf<Boolean?>()) -> documentValue
                 type.isSubtypeOf(typeOf<Enum<*>?>()) -> generateEnumArgumentValue(documentValue, type)
-                type.isSubtypeOf(typeOf<ArrayList<*>?>()) -> generateIterableArgumentValue(documentValue, parameter)
+                type.isSubtypeOf(typeOf<ArrayList<*>?>()) -> generateArrayListArgumentValue(documentValue, parameter)
                 type.isSubtypeOf(typeOf<Array<*>?>()) ->
                     throw Exception("Document to Entity mapping is not implemented for Array, use ArrayList")
                 type.isSubtypeOf(typeOf<List<*>?>()) ->
@@ -79,14 +79,20 @@ abstract class Entity(open val _id: ObjectId?) {
             }
         }
 
-        private fun generateIterableArgumentValue(documentValue: Any?, parameter: KParameter): Iterable<*> {
-            val iterableArgumentValue = arrayListOf<Any?>()
+        private fun generateArrayListArgumentValue(documentValue: Any?, parameter: KParameter): Iterable<*> {
+            val arrayListArgumentValue = arrayListOf<Any?>()
 
             for (iterationValue in documentValue as Iterable<*>) {
-                iterableArgumentValue.add(mapDocumentValueToArgumentValue(iterationValue, parameter, parameter.type.arguments.first().type!!))
+                arrayListArgumentValue.add(
+                    mapDocumentValueToArgumentValue(
+                        iterationValue,
+                        parameter,
+                        parameter.type.arguments.first().type!!
+                    )
+                )
             }
 
-            return iterableArgumentValue
+            return arrayListArgumentValue
         }
 
         private fun generateEnumArgumentValue(documentValue: Any?, type: KType): Enum<*> {
@@ -100,7 +106,7 @@ abstract class Entity(open val _id: ObjectId?) {
 
                 return values[index] as Enum<*>
             } else {
-                throw Exception()
+                throw Exception("'values' is not an array")
             }
         }
 

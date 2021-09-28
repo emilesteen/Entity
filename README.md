@@ -68,5 +68,5 @@ val user: User = Entity.findById(ObjectId("6153263f8aedab15aa1f44d4"))
 Update an Entity:
 ```kotlin
 user.status = UserStatus.INACTIVE
-user.save()
+user = user.save()
 ```
