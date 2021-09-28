@@ -49,9 +49,11 @@ abstract class Entity(open val _id: ObjectId?) {
             val arguments = mutableMapOf<KParameter, Any?>()
 
             for (parameter in constructor.parameters) {
-                val type = parameter.type
-
-                arguments[parameter] = mapDocumentValueToArgumentValue(document[parameter.name], parameter, type)
+                arguments[parameter] = mapDocumentValueToArgumentValue(
+                    document[parameter.name],
+                    parameter,
+                    parameter.type
+                )
             }
 
             return arguments
@@ -65,7 +67,11 @@ abstract class Entity(open val _id: ObjectId?) {
                 type.isSubtypeOf(typeOf<String?>()) -> documentValue
                 type.isSubtypeOf(typeOf<Boolean?>()) -> documentValue
                 type.isSubtypeOf(typeOf<Enum<*>?>()) -> generateEnumArgumentValue(documentValue, type)
-                type.isSubtypeOf(typeOf<Iterable<*>?>()) -> generateIterableArgumentValue(documentValue, parameter)
+                type.isSubtypeOf(typeOf<ArrayList<*>?>()) -> generateIterableArgumentValue(documentValue, parameter)
+                type.isSubtypeOf(typeOf<Array<*>?>()) ->
+                    throw Exception("Document to Entity mapping is not implemented for Array, use ArrayList")
+                type.isSubtypeOf(typeOf<List<*>?>()) ->
+                    throw Exception("Document to Entity mapping is not implemented for List, use ArrayList")
                 else -> createFromDocument(
                     documentValue as Document,
                     (type.classifier as KClass<*>).constructors.first()
@@ -77,15 +83,11 @@ abstract class Entity(open val _id: ObjectId?) {
             val iterableArgumentValue = arrayListOf<Any?>()
 
             for (iterationValue in documentValue as Iterable<*>) {
-
-
                 iterableArgumentValue.add(mapDocumentValueToArgumentValue(iterationValue, parameter, parameter.type.arguments.first().type!!))
             }
 
             return iterableArgumentValue
         }
-
-        inline fun <reified T : Any> classOfList(list: List<T>) = T::class
 
         private fun generateEnumArgumentValue(documentValue: Any?, type: KType): Enum<*> {
             val function = (type.classifier as KClass<*>)
