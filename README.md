@@ -37,7 +37,13 @@ class UserName(val firstName: String, val lastName: String) {}
 
 After defining an Entity, you can easily create and save an entity using:
 ```kotlin
-val user: User = User(null, UserName("Emile", "Steenkamp"), 23, UserStatus.ACTIVE, arrayListOf("ZA", "NL")).save()
+val user: User = User(
+    null,
+    UserName("Emile", "Steenkamp"),
+    23,
+    UserStatus.ACTIVE,
+    arrayListOf("ZA", "NL")
+).save()
 ```
 
 The above defined `User` object will be saved in the database as:
