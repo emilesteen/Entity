@@ -1,3 +1,4 @@
+import com.mongodb.BasicDBObject
 import entity.User
 import entity.UserName
 import entity.UserStatus
