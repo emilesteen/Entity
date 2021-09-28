@@ -8,13 +8,14 @@ import kotlin.test.assertNotEquals
 class EntityTest {
     @Test
     fun testEntityCreate() {
-        var user: User = User(null, UserName("Emile", "Steenkamp"), 23).save()
+        var user: User = User(null, UserName("Emile", "Steenkamp"), 23, UserStatus.ACTIVE, arrayListOf("ZA", "NL")).save()
         user = Entity.findById(user.getId())
 
         assertEquals("Emile", user.name.firstName)
         assertEquals("Steenkamp", user.name.lastName)
         assertEquals(23, user.age)
         assertEquals(UserStatus.ACTIVE, user.status)
+        assertEquals(arrayListOf("ZA", "NL"), user.countriesVisited)
     }
 
     @Test

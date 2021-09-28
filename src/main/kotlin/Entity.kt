@@ -45,38 +45,56 @@ abstract class Entity(open val _id: ObjectId?) {
             return constructor.callBy(arguments) as E
         }
 
-        @OptIn(ExperimentalStdlibApi::class)
         fun generateArguments(document: Document, constructor: KFunction<*>): Map<KParameter, Any?> {
             val arguments = mutableMapOf<KParameter, Any?>()
 
             for (parameter in constructor.parameters) {
                 val type = parameter.type
 
-                arguments[parameter] = when {
-                    type.isSubtypeOf(typeOf<ObjectId?>()) -> document[parameter.name]
-                    type.isSubtypeOf(typeOf<Number?>()) -> document[parameter.name]
-                    type.isSubtypeOf(typeOf<String?>()) -> document[parameter.name]
-                    type.isSubtypeOf(typeOf<Boolean?>()) -> document[parameter.name]
-                    type.isSubtypeOf(typeOf<Enum<*>?>()) -> getEnumArgument(document, parameter, type)
-                    type.isSubtypeOf(typeOf<Array<*>?>()) -> arrayOf<Any>()
-                    else -> createFromDocument(
-                        document[parameter.name] as Document,
-                        (type.classifier as KClass<*>).constructors.first()
-                    )
-                }
+                arguments[parameter] = mapDocumentValueToArgumentValue(document[parameter.name], parameter, type)
             }
 
             return arguments
         }
 
-        private fun getEnumArgument(document: Document, parameter: KParameter, type: KType): Enum<*> {
+        @OptIn(ExperimentalStdlibApi::class)
+        private fun mapDocumentValueToArgumentValue(documentValue: Any?, parameter: KParameter, type: KType): Any? {
+            return when {
+                type.isSubtypeOf(typeOf<ObjectId?>()) -> documentValue
+                type.isSubtypeOf(typeOf<Number?>()) -> documentValue
+                type.isSubtypeOf(typeOf<String?>()) -> documentValue
+                type.isSubtypeOf(typeOf<Boolean?>()) -> documentValue
+                type.isSubtypeOf(typeOf<Enum<*>?>()) -> generateEnumArgumentValue(documentValue, type)
+                type.isSubtypeOf(typeOf<Iterable<*>?>()) -> generateIterableArgumentValue(documentValue, parameter)
+                else -> createFromDocument(
+                    documentValue as Document,
+                    (type.classifier as KClass<*>).constructors.first()
+                )
+            }
+        }
+
+        private fun generateIterableArgumentValue(documentValue: Any?, parameter: KParameter): Iterable<*> {
+            val iterableArgumentValue = arrayListOf<Any?>()
+
+            for (iterationValue in documentValue as Iterable<*>) {
+
+
+                iterableArgumentValue.add(mapDocumentValueToArgumentValue(iterationValue, parameter, parameter.type.arguments.first().type!!))
+            }
+
+            return iterableArgumentValue
+        }
+
+        inline fun <reified T : Any> classOfList(list: List<T>) = T::class
+
+        private fun generateEnumArgumentValue(documentValue: Any?, type: KType): Enum<*> {
             val function = (type.classifier as KClass<*>)
                 .staticFunctions
                 .find { staticFunction -> staticFunction.name == "values" }
             val values = function!!.call()
 
             if (values is Array<*>) {
-                val index: Int = document[parameter.name] as Int
+                val index: Int = documentValue as Int
 
                 return values[index] as Enum<*>
             } else {
@@ -91,19 +109,34 @@ abstract class Entity(open val _id: ObjectId?) {
             for (kProperty in kProperties) {
                 val property = kProperty.getter.call(entity)
 
-                document[kProperty.name] = when (property) {
-                    null -> property
-                    is ObjectId -> property
-                    is Number -> property
-                    is String -> property
-                    is Boolean -> property
-                    is Enum<*> -> property.ordinal
-                    is Array<*> -> arrayOf<Any>()
-                    else -> generateDocument(property)
-                }
+                document[kProperty.name] = mapPropertyToDocument(property)
             }
 
             return document
+        }
+
+        private fun mapPropertyToDocument(property: Any?): Any? {
+            return when (property) {
+                null -> property
+                is ObjectId -> property
+                is Number -> property
+                is String -> property
+                is Boolean -> property
+                is Enum<*> -> property.ordinal
+                is Iterable<*> -> generateDocumentList(property)
+                else -> generateDocument(property)
+            }
+        }
+
+        private fun generateDocumentList(iterableProperty: Iterable<*>): List<Any?>
+        {
+            val documentArrayList = mutableListOf<Any?>()
+
+            for (property in iterableProperty) {
+                documentArrayList.add(mapPropertyToDocument(property))
+            }
+
+            return documentArrayList
         }
     }
 
