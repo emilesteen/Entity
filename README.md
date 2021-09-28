@@ -53,7 +53,7 @@ The above defined `User` object will be saved in the database as:
 
 After saving the object, we can find an Entity by its `_id`:
 ```kotlin
-val user: User = Entity.findById(ObjectId("6151dcead7627735cba71645"))
+val user: User = Entity.findById(ObjectId("6152f40c68128318704a7cf3"))
 ```
 
 Update an Entity:
