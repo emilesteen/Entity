@@ -2,8 +2,12 @@ import com.mongodb.BasicDBObject
 import com.mongodb.MongoClient
 import org.bson.Document
 import org.bson.types.ObjectId
+import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty
+import kotlin.reflect.full.isSubtypeOf
+import kotlin.reflect.full.staticFunctions
+import kotlin.reflect.typeOf
 
 abstract class Entity(open val _id: ObjectId?) {
     companion object {
@@ -38,12 +42,39 @@ abstract class Entity(open val _id: ObjectId?) {
             return E::class.annotations.filterIsInstance<CollectionName>().first().collectionName
         }
 
+        @OptIn(ExperimentalStdlibApi::class)
         inline fun <reified E>createFromDocument(document: Document): E {
             val arguments = mutableMapOf<KParameter, Any?>()
             val constructor = E::class.constructors.first()
 
             for (parameter in constructor.parameters) {
-                arguments[parameter] = document[parameter.name]
+                val type = parameter.type
+
+//                arguments[parameter] = when {
+//                    type.isSubtypeOf(typeOf<Enum<*>>()) -> (parameter.type.classifier as KClass<Enum<*>>)::class.values[document[parameter.name]]
+//                    else -> document[parameter.name]
+//                }
+
+                arguments[parameter] = if (type.isSubtypeOf(typeOf<Enum<*>>())) {
+                    val classifier = type.classifier
+
+                    if (classifier == null) {
+                        throw Exception()
+                    } else {
+                        val function = (classifier as KClass<*>).staticFunctions.find { staticFunction -> staticFunction.name == "values" }
+                        val values = function!!.call()
+
+                        if (values is Array<*>) {
+                            val index: Int = document[parameter.name] as Int
+
+                            values[index]
+                        } else {
+                            throw Exception()
+                        }
+                    }
+                } else {
+                    document[parameter.name]
+                }
             }
 
             return constructor.callBy(arguments)
@@ -54,7 +85,18 @@ abstract class Entity(open val _id: ObjectId?) {
             val kProperties = entity.javaClass.kotlin.members.filterIsInstance<KProperty<*>>()
 
             for (kProperty in kProperties) {
-                document[kProperty.name] = kProperty.getter.call(entity)
+                val property = kProperty.getter.call(entity)
+
+                document[kProperty.name] = when (property) {
+                    null -> property
+                    is ObjectId -> property
+                    is Number -> property
+                    is String -> property
+                    is Boolean -> property
+                    is Enum<*> -> property.ordinal
+                    is Array<*> -> arrayOf<Any>()
+                    else -> generateDocument(property)
+                }
             }
 
             return document

@@ -11,6 +11,11 @@ class User(
     override val _id: ObjectId?,
     val firstName: String,
     val lastName: String,
-    var nickName: String,
-    val age: Number
+    val age: Number,
+    var status: UserStatus = UserStatus.ACTIVE
 ) : Entity(_id)
+
+enum class UserStatus {
+    ACTIVE,
+    INACTIVE
+}
