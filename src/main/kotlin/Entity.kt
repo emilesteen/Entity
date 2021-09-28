@@ -2,12 +2,9 @@ import com.mongodb.BasicDBObject
 import com.mongodb.MongoClient
 import org.bson.Document
 import org.bson.types.ObjectId
-import kotlin.reflect.KClass
-import kotlin.reflect.KParameter
-import kotlin.reflect.KProperty
+import kotlin.reflect.*
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.staticFunctions
-import kotlin.reflect.typeOf
 
 abstract class Entity(open val _id: ObjectId?) {
     companion object {
@@ -50,34 +47,32 @@ abstract class Entity(open val _id: ObjectId?) {
             for (parameter in constructor.parameters) {
                 val type = parameter.type
 
-//                arguments[parameter] = when {
-//                    type.isSubtypeOf(typeOf<Enum<*>>()) -> (parameter.type.classifier as KClass<Enum<*>>)::class.values[document[parameter.name]]
-//                    else -> document[parameter.name]
-//                }
-
-                arguments[parameter] = if (type.isSubtypeOf(typeOf<Enum<*>>())) {
-                    val classifier = type.classifier
-
-                    if (classifier == null) {
-                        throw Exception()
-                    } else {
-                        val function = (classifier as KClass<*>).staticFunctions.find { staticFunction -> staticFunction.name == "values" }
-                        val values = function!!.call()
-
-                        if (values is Array<*>) {
-                            val index: Int = document[parameter.name] as Int
-
-                            values[index]
-                        } else {
-                            throw Exception()
-                        }
-                    }
-                } else {
-                    document[parameter.name]
+                arguments[parameter] = when {
+                    type.isSubtypeOf(typeOf<Enum<*>>()) -> getEnumArgument(document, parameter, type)
+                    else -> document[parameter.name]
                 }
             }
 
             return constructor.callBy(arguments)
+        }
+
+        fun getEnumArgument(document: Document, parameter: KParameter, type: KType): Enum<*> {
+            val classifier = type.classifier
+
+            if (classifier == null) {
+                throw Exception()
+            } else {
+                val function = (classifier as KClass<*>).staticFunctions.find { staticFunction -> staticFunction.name == "values" }
+                val values = function!!.call()
+
+                if (values is Array<*>) {
+                    val index: Int = document[parameter.name] as Int
+
+                    return values[index] as Enum<*>
+                } else {
+                    throw Exception()
+                }
+            }
         }
 
         fun generateDocument(entity: Any): Document {
