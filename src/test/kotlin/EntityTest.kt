@@ -8,7 +8,7 @@ import kotlin.test.assertNotEquals
 class EntityTest {
     @Test
     fun testEntityCreate() {
-        var user = User(null, UserName("Emile", "Steenkamp"), 23).save<User>()
+        var user: User = User(null, UserName("Emile", "Steenkamp"), 23).save()
         user = Entity.findById(user.getId())
 
         assertEquals("Emile", user.name.firstName)
@@ -19,7 +19,7 @@ class EntityTest {
 
     @Test
     fun testEntityUpdate() {
-        var user = User(null, UserName("Emile", "Mostert"), 25).save<User>()
+        var user: User = User(null, UserName("Emile", "Mostert"), 25).save()
         user = Entity.findById(user.getId())
 
         assertEquals(UserStatus.ACTIVE, user.status)

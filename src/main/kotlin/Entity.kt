@@ -69,7 +69,7 @@ abstract class Entity(open val _id: ObjectId?) {
             return arguments
         }
 
-        fun getEnumArgument(document: Document, parameter: KParameter, type: KType): Enum<*> {
+        private fun getEnumArgument(document: Document, parameter: KParameter, type: KType): Enum<*> {
             val function = (type.classifier as KClass<*>)
                 .staticFunctions
                 .find { staticFunction -> staticFunction.name == "values" }
