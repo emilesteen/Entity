@@ -6,7 +6,7 @@ import kotlin.collections.ArrayList
 
 @Entity.DatabaseName("user")
 @Entity.CollectionName("user")
-class User(
+data class User(
     val name: UserName,
     val age: Number,
     var status: UserStatus = UserStatus.ACTIVE,

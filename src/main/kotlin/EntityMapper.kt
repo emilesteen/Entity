@@ -49,9 +49,9 @@ class EntityMapper {
                 type.isSubtypeOf(typeOf<Enum<*>?>()) -> generateEnumArgumentValue(documentValue, type)
                 type.isSubtypeOf(typeOf<ArrayList<*>?>()) -> generateArrayListArgumentValue(documentValue, parameter)
                 type.isSubtypeOf(typeOf<Array<*>?>()) ->
-                    throw Exception("Document to Entity mapping is not implemented for Array, use ArrayList")
+                    throw Exception("Entity mapping is not implemented for Array, use ArrayList")
                 type.isSubtypeOf(typeOf<List<*>?>()) ->
-                    throw Exception("Document to Entity mapping is not implemented for List, use ArrayList")
+                    throw Exception("Entity mapping is not implemented for List, use ArrayList")
                 else -> createFromDocument(
                     documentValue as Document,
                     (type.classifier as KClass<*>).constructors.first()
@@ -117,7 +117,9 @@ class EntityMapper {
                 is Code -> property
                 is BsonRegularExpression -> property
                 is Enum<*> -> property.ordinal
-                is Iterable<*> -> generateDocumentList(property)
+                is ArrayList<*> -> generateDocumentList(property)
+                is Array<*> -> throw Exception("Entity mapping is not implemented for Array, use ArrayList")
+                is List<*> -> throw Exception("Entity mapping is not implemented for List, use ArrayList")
                 else -> generateDocument(property)
             }
         }
