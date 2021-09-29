@@ -44,7 +44,7 @@ var user = User(
 ```
 
 The above defined `User` object will be saved in the database as:
-```json
+```javascript
 {
   "_id": ObjectId("6153263f8aedab15aa1f44d4"),
   "age": 23,
