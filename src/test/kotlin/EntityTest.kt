@@ -1,4 +1,3 @@
-import com.mongodb.BasicDBObject
 import entity.User
 import entity.UserName
 import entity.UserStatus
@@ -9,8 +8,8 @@ import kotlin.test.assertNotEquals
 class EntityTest {
     @Test
     fun testEntityCreate() {
-        var user: User = User(null, UserName("Emile", "Steenkamp"), 23, UserStatus.ACTIVE, arrayListOf("ZA", "NL")).save()
-        user = Entity.findById(user.getId())
+        var user = User(null, UserName("Emile", "Steenkamp"), 23, UserStatus.ACTIVE, arrayListOf("ZA", "NL")).save()
+        user = EntityQuery.findById(user.getId())
 
         assertEquals("Emile", user.name.firstName)
         assertEquals("Steenkamp", user.name.lastName)
@@ -21,14 +20,14 @@ class EntityTest {
 
     @Test
     fun testEntityUpdate() {
-        var user: User = User(null, UserName("Emile", "Mostert"), 25).save()
-        user = Entity.findById(user.getId())
+        var user = User(null, UserName("Emile", "Mostert"), 25).save()
+        user = EntityQuery.findById(user.getId())
 
         assertEquals(UserStatus.ACTIVE, user.status)
 
         user.status = UserStatus.INACTIVE
         user = user.save()
-        user = Entity.findById(user.getId())
+        user = EntityQuery.findById(user.getId())
 
         assertEquals(UserStatus.INACTIVE, user.status)
     }
@@ -36,7 +35,7 @@ class EntityTest {
     @Test
     fun testEntityEquality() {
         val user1 = User(null, UserName("Wihan", "Nel"), 22).save<User>()
-        val user2 = Entity.findById<User>(user1.getId())
+        val user2 = EntityQuery.findById<User>(user1.getId())
 
         assertEquals(user1, user2)
     }
