@@ -37,12 +37,12 @@ abstract class Entity(override val _id: ObjectId?) : EntityInterface {
     override fun hashCode(): Int {
         return _id.hashCode()
     }
+
+    @Target(AnnotationTarget.CLASS)
+    @Retention(AnnotationRetention.RUNTIME)
+    annotation class DatabaseName(val databaseName: String)
+
+    @Target(AnnotationTarget.CLASS)
+    @Retention(AnnotationRetention.RUNTIME)
+    annotation class CollectionName(val collectionName: String)
 }
-
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class DatabaseName(val databaseName: String)
-
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class CollectionName(val collectionName: String)

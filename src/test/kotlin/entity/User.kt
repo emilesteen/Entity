@@ -1,13 +1,11 @@
 package entity
 
-import CollectionName
-import DatabaseName
 import Entity
 import org.bson.types.ObjectId
 import kotlin.collections.ArrayList
 
-@DatabaseName("user")
-@CollectionName("user")
+@Entity.DatabaseName("user")
+@Entity.CollectionName("user")
 class User(
     override val _id: ObjectId?,
     val name: UserName,
