@@ -13,7 +13,12 @@ import kotlin.reflect.full.staticFunctions
 
 class EntityMapper {
     companion object {
-        inline fun <reified E>createFromDocument(document: Document, constructor: KFunction<*>): E {
+        inline fun <reified E>createFromDocument(document: Document, entityClass: KClass<*>): E {
+            if (!entityClass.isData) {
+                throw Exception("${E::class.simpleName} must be declared as a data class")
+            }
+
+            val constructor = entityClass.constructors.first()
             val arguments = generateArguments(document, constructor)
 
             return constructor.callBy(arguments) as E
@@ -54,7 +59,7 @@ class EntityMapper {
                     throw Exception("Entity mapping is not implemented for List, use ArrayList")
                 else -> createFromDocument(
                     documentValue as Document,
-                    (type.classifier as KClass<*>).constructors.first()
+                    (type.classifier as KClass<*>)
                 )
             }
         }
@@ -91,6 +96,10 @@ class EntityMapper {
         }
 
         fun generateDocument(entity: Any): Document {
+            if (!entity::class.isData) {
+                throw Exception("${entity::class.simpleName} must be declared as a data class")
+            }
+
             val document = Document()
             val kProperties = entity.javaClass.kotlin.members.filterIsInstance<KProperty<*>>()
 

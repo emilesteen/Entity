@@ -6,7 +6,13 @@ Entity is a Kotlin MongoDB ORM.
 
 ## How does it work
 
-To define an Entity:
+To define an Entity data class:
+
+1. Define a data class
+2. Add `@Entity.DatabaseName` and `@Entity.CollectionName` annotations to the data class
+3. Extend `Entity`
+
+As such:
 
 ```kotlin
 package entity
@@ -17,7 +23,7 @@ import kotlin.collections.ArrayList
 
 @Entity.DatabaseName("user")
 @Entity.CollectionName("user")
-class User(
+data class User(
     val name: UserName,
     val age: Number,
     var status: UserStatus = UserStatus.ACTIVE,
@@ -30,7 +36,7 @@ enum class UserStatus {
     INACTIVE
 }
 
-class UserName(val firstName: String, val lastName: String)
+data class UserName(val firstName: String, val lastName: String)
 ```
 
 After defining an Entity, you can easily create and save an Entity using:
@@ -95,7 +101,7 @@ Code                 |
 BsonRegularExpression|
 Enum<*>              |An Enum will be stored in the database using it's ordinal value
 ArrayList<*>         |ArrayList will map all Items in the ArrayList using the same mapping, except nested ArrayLists are not possible yet
-Class                |A Class Document will recursively be created by using the same mapping
+data class           |A data class Document will recursively be created by using the same mapping
 
 When a Document is loaded, the primary constructor of the Entity Class is
-called and the document values are mapped to the Entity Class argument
+called, and the document values are mapped to the Entity Class argument

@@ -16,7 +16,7 @@ class EntityQuery {
             if (document == null) {
                 throw Exception("Document not found")
             } else {
-                return EntityMapper.createFromDocument(document, E::class.constructors.first())
+                return EntityMapper.createFromDocument(document, E::class)
             }
         }
 
@@ -29,7 +29,7 @@ class EntityQuery {
             val entities = arrayListOf<E>()
 
             for (document in documents) {
-                entities.add(EntityMapper.createFromDocument(document, E::class.constructors.first()))
+                entities.add(EntityMapper.createFromDocument(document, E::class))
             }
 
             return entities
