@@ -42,7 +42,8 @@ class EntityTest {
     @Test
     fun testEntityFind() {
         val filter = BasicDBObject()
-        val users = EntityQuery.find<User>(filter)
+
+        EntityQuery.find<User>(filter)
     }
 
     @Test
