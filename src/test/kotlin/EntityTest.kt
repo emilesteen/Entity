@@ -1,3 +1,4 @@
+import com.mongodb.BasicDBObject
 import entity.User
 import entity.UserName
 import entity.UserStatus
@@ -9,7 +10,6 @@ class EntityTest {
     @Test
     fun testEntityCreate() {
         var user = User(
-            null,
             UserName("Emile", "Steenkamp"),
             23,
             UserStatus.ACTIVE,
@@ -27,7 +27,7 @@ class EntityTest {
 
     @Test
     fun testEntityUpdate() {
-        var user = User(null, UserName("Emile", "Mostert"), 25).save()
+        var user = User(UserName("Emile", "Mostert"), 25).save()
         user = EntityQuery.findById(user.getId())
 
         assertEquals(UserStatus.ACTIVE, user.status)
@@ -40,8 +40,14 @@ class EntityTest {
     }
 
     @Test
+    fun testEntityFind() {
+        val filter = BasicDBObject()
+        val users = EntityQuery.find<User>(filter)
+    }
+
+    @Test
     fun testEntityEquality() {
-        val user1 = User(null, UserName("Wihan", "Nel"), 22).save<User>()
+        val user1 = User(UserName("Wihan", "Nel"), 22).save<User>()
         val user2 = EntityQuery.findById<User>(user1.getId())
 
         assertEquals(user1, user2)
@@ -49,13 +55,13 @@ class EntityTest {
 
     @Test
     fun testEntityEqualityOnNullId() {
-        val user1 = User(null, UserName("Gerrit", "Burger"), 23)
-        val user2 = User(null, UserName("Wikus", "Van der Merwe"), 26)
+        val user1 = User(UserName("Gerrit", "Burger"), 23)
+        val user2 = User(UserName("Wikus", "Van der Merwe"), 26)
 
         assertNotEquals(user1, user2)
         assertNotEquals(user2, user1)
 
-        val user3 = User(null, UserName("Nicholas", "Van Huysteen"), 24)
+        val user3 = User(UserName("Nicholas", "Van Huysteen"), 24)
 
         assertNotEquals(user1, user3)
         assertNotEquals(user3, user1)
@@ -63,7 +69,7 @@ class EntityTest {
 
     @Test
     fun testEntityToString() {
-        val user = User(null, UserName("Willem", "Aggenbach"), 22)
+        val user = User(UserName("Willem", "Aggenbach"), 22)
 
         println(user.toString())
     }

@@ -7,12 +7,12 @@ import kotlin.collections.ArrayList
 @Entity.DatabaseName("user")
 @Entity.CollectionName("user")
 class User(
-    override val _id: ObjectId?,
     val name: UserName,
     val age: Number,
     var status: UserStatus = UserStatus.ACTIVE,
-    val countriesVisited: ArrayList<String> = arrayListOf()
-) : Entity(_id)
+    val countriesVisited: ArrayList<String> = arrayListOf(),
+    override val _id: ObjectId? = null,
+) : Entity()
 
 enum class UserStatus {
     ACTIVE,

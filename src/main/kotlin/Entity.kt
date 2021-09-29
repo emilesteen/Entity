@@ -1,6 +1,8 @@
 import org.bson.types.ObjectId
 
-abstract class Entity(override val _id: ObjectId?) : EntityInterface {
+abstract class Entity() : EntityInterface {
+    abstract override val _id: ObjectId?
+
     override fun getId(): ObjectId
     {
         val id = this._id

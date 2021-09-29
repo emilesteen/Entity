@@ -18,12 +18,12 @@ import kotlin.collections.ArrayList
 @Entity.DatabaseName("user")
 @Entity.CollectionName("user")
 class User(
-    override val _id: ObjectId?,
     val name: UserName,
     val age: Number,
     var status: UserStatus = UserStatus.ACTIVE,
-    val countriesVisited: ArrayList<String> = arrayListOf()
-) : Entity(_id)
+    val countriesVisited: ArrayList<String> = arrayListOf(),
+    override val _id: ObjectId? = null,
+) : Entity()
 
 enum class UserStatus {
     ACTIVE,
@@ -35,8 +35,7 @@ class UserName(val firstName: String, val lastName: String)
 
 After defining an Entity, you can easily create and save an entity using:
 ```kotlin
-val user = User(
-    null,
+var user = User(
     UserName("Emile", "Steenkamp"),
     23,
     UserStatus.ACTIVE,
@@ -58,9 +57,15 @@ The above defined `User` object will be saved in the database as:
 }
 ```
 
-After saving the object, we can find an Entity by its `_id`:
+After saving the Entity, we can find an Entity by its `_id`:
 ```kotlin
-val user = EntityQuery.findById(ObjectId("6153263f8aedab15aa1f44d4"))
+val user = EntityQuery.findById<User>(ObjectId("6153263f8aedab15aa1f44d4"))
+```
+
+Or find all Entities by a filter:
+```kotlin
+val filter = BasicDBObject()
+val users = EntityQuery.find<User>(filter)
 ```
 
 Update an Entity:
