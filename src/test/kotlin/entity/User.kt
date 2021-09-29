@@ -2,6 +2,9 @@ package entity
 
 import Entity
 import org.bson.types.ObjectId
+import java.sql.Timestamp
+import java.time.Instant
+import java.util.*
 import kotlin.collections.ArrayList
 
 @Entity.DatabaseName("user")
@@ -11,6 +14,8 @@ class User(
     val age: Number,
     var status: UserStatus = UserStatus.ACTIVE,
     val countriesVisited: ArrayList<String> = arrayListOf(),
+    var date: Date = Date(),
+    var timestamp: Timestamp = Timestamp.from(Instant.now()),
     override val _id: ObjectId? = null,
 ) : Entity()
 

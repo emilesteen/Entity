@@ -1,5 +1,12 @@
+import org.bson.BsonRegularExpression
 import org.bson.Document
+import org.bson.types.Binary
+import org.bson.types.Code
 import org.bson.types.ObjectId
+import org.bson.types.Symbol
+import java.sql.Timestamp
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.reflect.*
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.staticFunctions
@@ -29,10 +36,16 @@ class EntityMapper {
         @OptIn(ExperimentalStdlibApi::class)
         private fun mapDocumentValueToArgumentValue(documentValue: Any?, parameter: KParameter, type: KType): Any? {
             return when {
-                type.isSubtypeOf(typeOf<ObjectId?>()) -> documentValue
-                type.isSubtypeOf(typeOf<Number?>()) -> documentValue
                 type.isSubtypeOf(typeOf<String?>()) -> documentValue
+                type.isSubtypeOf(typeOf<Number?>()) -> documentValue
                 type.isSubtypeOf(typeOf<Boolean?>()) -> documentValue
+                type.isSubtypeOf(typeOf<Timestamp?>()) -> if (documentValue == null) null else (Timestamp.from((documentValue as Date).toInstant()))
+                type.isSubtypeOf(typeOf<Symbol?>()) -> documentValue
+                type.isSubtypeOf(typeOf<Date?>()) -> documentValue
+                type.isSubtypeOf(typeOf<ObjectId?>()) -> documentValue
+                type.isSubtypeOf(typeOf<Binary?>()) -> documentValue
+                type.isSubtypeOf(typeOf<Code?>()) -> documentValue
+                type.isSubtypeOf(typeOf<BsonRegularExpression>()) -> documentValue
                 type.isSubtypeOf(typeOf<Enum<*>?>()) -> generateEnumArgumentValue(documentValue, type)
                 type.isSubtypeOf(typeOf<ArrayList<*>?>()) -> generateArrayListArgumentValue(documentValue, parameter)
                 type.isSubtypeOf(typeOf<Array<*>?>()) ->
@@ -93,10 +106,16 @@ class EntityMapper {
         private fun mapPropertyToDocument(property: Any?): Any? {
             return when (property) {
                 null -> property
-                is ObjectId -> property
-                is Number -> property
                 is String -> property
+                is Number -> property
                 is Boolean -> property
+                is Timestamp -> property
+                is Symbol -> property
+                is Date -> property
+                is ObjectId -> property
+                is Binary -> property
+                is Code -> property
+                is BsonRegularExpression -> property
                 is Enum<*> -> property.ordinal
                 is Iterable<*> -> generateDocumentList(property)
                 else -> generateDocument(property)
