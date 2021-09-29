@@ -33,7 +33,7 @@ enum class UserStatus {
 class UserName(val firstName: String, val lastName: String)
 ```
 
-After defining an Entity, you can easily create and save an entity using:
+After defining an Entity, you can easily create and save an Entity using:
 ```kotlin
 var user = User(
     UserName("Emile", "Steenkamp"),

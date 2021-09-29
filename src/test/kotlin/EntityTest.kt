@@ -27,7 +27,7 @@ class EntityTest {
 
     @Test
     fun testEntityUpdate() {
-        var user = User(UserName("Emile", "Mostert"), 25).save()
+        var user = User(UserName("Wikus", "van der Merwe"), 25).save()
         user = EntityQuery.findById(user.getId())
 
         assertEquals(UserStatus.ACTIVE, user.status)
@@ -55,16 +55,21 @@ class EntityTest {
 
     @Test
     fun testEntityEqualityOnNullId() {
-        val user1 = User(UserName("Gerrit", "Burger"), 23)
-        val user2 = User(UserName("Wikus", "Van der Merwe"), 26)
+        val notSavedUser1 = User(UserName("Gerrit", "Burger"), 23)
+        val notSavedUser2 = User(UserName("Gerrit", "Burger"), 23)
 
-        assertNotEquals(user1, user2)
-        assertNotEquals(user2, user1)
+        assertNotEquals(notSavedUser1, notSavedUser2)
+        assertNotEquals(notSavedUser2, notSavedUser1)
 
-        val user3 = User(UserName("Nicholas", "Van Huysteen"), 24)
+        val savedUser1 = User(UserName("Gerrit", "Burger"), 23).save()
 
-        assertNotEquals(user1, user3)
-        assertNotEquals(user3, user1)
+        assertNotEquals(notSavedUser1, savedUser1)
+        assertNotEquals(savedUser1, notSavedUser1)
+
+        val savedUser2 = User(UserName("Gerrit", "Burger"), 23).save()
+
+        assertNotEquals(savedUser1, savedUser2)
+        assertNotEquals(savedUser2, savedUser1)
     }
 
     @Test

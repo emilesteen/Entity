@@ -30,14 +30,14 @@ inline fun <reified E: EntityInterface>saveInsert(entity: E): E {
         }
     }
 
-    val entityNew = constructor.callBy(arguments)
+    val newEntity = constructor.callBy(arguments)
 
     EntityHelper.getClient()
         .getDatabase(EntityHelper.getDatabaseName<E>())
         .getCollection(EntityHelper.getCollectionName<E>())
-        .insertOne(EntityMapper.generateDocument(entityNew))
+        .insertOne(EntityMapper.generateDocument(newEntity))
 
-    return entityNew
+    return newEntity
 }
 
 inline fun <reified E: EntityInterface>saveReplace(entity: E): E {
