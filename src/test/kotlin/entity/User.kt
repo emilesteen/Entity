@@ -19,4 +19,4 @@ enum class UserStatus {
     INACTIVE
 }
 
-class UserName(val firstName: String, val lastName: String) {}
+class UserName(val firstName: String, val lastName: String)

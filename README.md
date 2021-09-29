@@ -11,14 +11,12 @@ To define an Entity:
 ```kotlin
 package entity
 
-import CollectionName
-import DatabaseName
 import Entity
 import org.bson.types.ObjectId
 import kotlin.collections.ArrayList
 
-@DatabaseName("user")
-@CollectionName("user")
+@Entity.DatabaseName("user")
+@Entity.CollectionName("user")
 class User(
     override val _id: ObjectId?,
     val name: UserName,
@@ -32,13 +30,13 @@ enum class UserStatus {
     INACTIVE
 }
 
-class UserName(val firstName: String, val lastName: String) {}
+class UserName(val firstName: String, val lastName: String)
 ```
 
 After defining an Entity, you can easily create and save an entity using:
 ```kotlin
-val user: User = User(
-    null, // _id should always be null when creating a new Entity
+val user = User(
+    null,
     UserName("Emile", "Steenkamp"),
     23,
     UserStatus.ACTIVE,
@@ -62,7 +60,7 @@ The above defined `User` object will be saved in the database as:
 
 After saving the object, we can find an Entity by its `_id`:
 ```kotlin
-val user: User = Entity.findById(ObjectId("6153263f8aedab15aa1f44d4"))
+val user = EntityQuery.findById(ObjectId("6153263f8aedab15aa1f44d4"))
 ```
 
 Update an Entity:
