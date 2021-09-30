@@ -13,9 +13,9 @@ class EntityTest {
             23,
             UserStatus.ACTIVE,
             arrayListOf("ZA", "NL")
-        ).save()
+        ).insert()
 
-        user = EntityQuery.findById(user.getId())
+        user = EntityQuery.findById(user._id)
 
         assertEquals("Emile", user.name.firstName)
         assertEquals("Steenkamp", user.name.lastName)
@@ -26,14 +26,14 @@ class EntityTest {
 
     @Test
     fun testEntityUpdate() {
-        var user = User(UserName("Wikus", "van der Merwe"), 25).save()
-        user = EntityQuery.findById(user.getId())
+        var user = User(UserName("Wikus", "van der Merwe"), 25).insert()
+        user = EntityQuery.findById(user._id)
 
         assertEquals(UserStatus.ACTIVE, user.status)
 
         user.status = UserStatus.INACTIVE
-        user = user.save()
-        user = EntityQuery.findById(user.getId())
+        user = user.update()
+        user = EntityQuery.findById(user._id)
 
         assertEquals(UserStatus.INACTIVE, user.status)
     }

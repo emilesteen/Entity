@@ -51,8 +51,8 @@ class EntityMapper {
                 type.isSubtypeOf(typeOf<Binary?>()) -> documentValue
                 type.isSubtypeOf(typeOf<Code?>()) -> documentValue
                 type.isSubtypeOf(typeOf<BsonRegularExpression>()) -> documentValue
-                type.isSubtypeOf(typeOf<Enum<*>?>()) -> generateEnumArgumentValue(documentValue, type)
-                type.isSubtypeOf(typeOf<ArrayList<*>?>()) -> generateArrayListArgumentValue(documentValue, parameter)
+                type.isSubtypeOf(typeOf<Enum<*>?>()) -> generateArgumentValueEnum(documentValue, type)
+                type.isSubtypeOf(typeOf<ArrayList<*>?>()) -> generateArgumentValueArrayList(documentValue, parameter)
                 type.isSubtypeOf(typeOf<Array<*>?>()) ->
                     throw Exception("Entity mapping is not implemented for Array, use ArrayList")
                 type.isSubtypeOf(typeOf<List<*>?>()) ->
@@ -64,11 +64,11 @@ class EntityMapper {
             }
         }
 
-        private fun generateArrayListArgumentValue(documentValue: Any?, parameter: KParameter): Iterable<*> {
-            val arrayListArgumentValue = arrayListOf<Any?>()
+        private fun generateArgumentValueArrayList(documentValue: Any?, parameter: KParameter): ArrayList<*> {
+            val argumentValueArrayList = arrayListOf<Any?>()
 
             for (iterationValue in documentValue as Iterable<*>) {
-                arrayListArgumentValue.add(
+                argumentValueArrayList.add(
                     mapDocumentValueToArgumentValue(
                         iterationValue,
                         parameter,
@@ -77,10 +77,10 @@ class EntityMapper {
                 )
             }
 
-            return arrayListArgumentValue
+            return argumentValueArrayList
         }
 
-        private fun generateEnumArgumentValue(documentValue: Any?, type: KType): Enum<*> {
+        private fun generateArgumentValueEnum(documentValue: Any?, type: KType): Enum<*> {
             val function = (type.classifier as KClass<*>)
                 .staticFunctions
                 .find { staticFunction -> staticFunction.name == "values" }
@@ -101,18 +101,18 @@ class EntityMapper {
             }
 
             val document = Document()
-            val kProperties = entity.javaClass.kotlin.members.filterIsInstance<KProperty<*>>()
+            val properties = entity.javaClass.kotlin.members.filterIsInstance<KProperty<*>>()
 
-            for (kProperty in kProperties) {
-                val property = kProperty.getter.call(entity)
+            for (property in properties) {
+                val propertyValue = property.getter.call(entity)
 
-                document[kProperty.name] = mapPropertyToDocument(property)
+                document[property.name] = mapPropertyValueToDocumentValue(propertyValue)
             }
 
             return document
         }
 
-        private fun mapPropertyToDocument(property: Any?): Any? {
+        private fun mapPropertyValueToDocumentValue(property: Any?): Any? {
             return when (property) {
                 null -> property
                 is String -> property
@@ -126,19 +126,19 @@ class EntityMapper {
                 is Code -> property
                 is BsonRegularExpression -> property
                 is Enum<*> -> property.ordinal
-                is ArrayList<*> -> generateDocumentList(property)
+                is ArrayList<*> -> generateDocumentArrayList(property)
                 is Array<*> -> throw Exception("Entity mapping is not implemented for Array, use ArrayList")
                 is List<*> -> throw Exception("Entity mapping is not implemented for List, use ArrayList")
                 else -> generateDocument(property)
             }
         }
 
-        private fun generateDocumentList(iterableProperty: Iterable<*>): List<Any?>
+        private fun generateDocumentArrayList(propertyArrayList: ArrayList<*>): ArrayList<Any?>
         {
-            val documentArrayList = mutableListOf<Any?>()
+            val documentArrayList = ArrayList<Any?>()
 
-            for (property in iterableProperty) {
-                documentArrayList.add(mapPropertyToDocument(property))
+            for (property in propertyArrayList) {
+                documentArrayList.add(mapPropertyValueToDocumentValue(property))
             }
 
             return documentArrayList

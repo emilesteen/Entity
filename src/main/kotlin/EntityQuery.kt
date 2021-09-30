@@ -7,9 +7,7 @@ class EntityQuery {
             val filter = BasicDBObject();
             filter["_id"] = _id
 
-            val document = EntityHelper.getClient()
-                .getDatabase(EntityHelper.getDatabaseName<E>())
-                .getCollection(EntityHelper.getCollectionName<E>())
+            val document = EntityHelper.getCollection<E>()
                 .find(filter)
                 .first()
 
@@ -22,11 +20,10 @@ class EntityQuery {
 
         inline fun <reified E>find(filter: BasicDBObject): ArrayList<E>
         {
-            val documents = EntityHelper.getClient()
-                .getDatabase(EntityHelper.getDatabaseName<E>())
-                .getCollection(EntityHelper.getCollectionName<E>())
-                .find(filter)
             val entities = arrayListOf<E>()
+            val documents = EntityHelper
+                .getCollection<E>()
+                .find(filter)
 
             for (document in documents) {
                 entities.add(EntityMapper.createFromDocument(document, E::class))

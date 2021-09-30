@@ -11,8 +11,9 @@ data class User(
     val age: Number,
     var status: UserStatus = UserStatus.ACTIVE,
     val countriesVisited: ArrayList<String> = arrayListOf(),
-    override val _id: ObjectId? = null,
-) : Entity()
+    override val _id: ObjectId = ObjectId()
+) : Entity() {
+}
 
 enum class UserStatus {
     ACTIVE,
