@@ -15,9 +15,9 @@ data class User(
 ) : Entity() {
 }
 
+data class UserName(val firstName: String, val lastName: String)
+
 enum class UserStatus {
     ACTIVE,
     INACTIVE
 }
-
-data class UserName(val firstName: String, val lastName: String)

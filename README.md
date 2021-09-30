@@ -28,25 +28,26 @@ data class User(
     val age: Number,
     var status: UserStatus = UserStatus.ACTIVE,
     val countriesVisited: ArrayList<String> = arrayListOf(),
-    override val _id: ObjectId? = null,
-) : Entity()
+    override val _id: ObjectId = ObjectId()
+) : Entity() {
+}
+
+data class UserName(val firstName: String, val lastName: String)
 
 enum class UserStatus {
     ACTIVE,
     INACTIVE
 }
-
-data class UserName(val firstName: String, val lastName: String)
 ```
 
-After defining an Entity, you can easily create and save an Entity using:
+After defining an Entity, you can easily create and insert an Entity using:
 ```kotlin
 var user = User(
     UserName("Emile", "Steenkamp"),
     23,
     UserStatus.ACTIVE,
     arrayListOf("ZA", "NL")
-).save()
+).insert()
 ```
 
 The above defined `User` object will be saved in the database as:
@@ -63,7 +64,7 @@ The above defined `User` object will be saved in the database as:
 }
 ```
 
-After saving the Entity, we can find an Entity by its `_id`:
+After inserting the Entity, we can find an Entity by its `_id`:
 ```kotlin
 val user = EntityQuery.findById<User>(ObjectId("6153263f8aedab15aa1f44d4"))
 ```
@@ -77,7 +78,7 @@ val users = EntityQuery.find<User>(filter)
 Update an Entity:
 ```kotlin
 user.status = UserStatus.INACTIVE
-user = user.save()
+user = user.update()
 ```
 
 ## Mapping
