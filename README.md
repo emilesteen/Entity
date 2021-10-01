@@ -29,8 +29,7 @@ data class User(
     var status: UserStatus = UserStatus.ACTIVE,
     val countriesVisited: ArrayList<String> = arrayListOf(),
     override val _id: ObjectId = ObjectId()
-) : Entity() {
-}
+) : Entity()
 
 data class UserName(val firstName: String, val lastName: String)
 
