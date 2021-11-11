@@ -4,14 +4,14 @@ import org.bson.Document
 
 class EntityHelper {
     companion object {
-        private val client: MongoClient? = null
+        private val client: MongoClient = MongoClient()
+
+        fun getClient(): MongoClient {
+            return client
+        }
 
         inline fun <reified E>getCollection(): MongoCollection<Document> {
             return getClient().getDatabase(getDatabaseName<E>()).getCollection(getCollectionName<E>())
-        }
-
-        fun getClient(): MongoClient {
-            return client ?: MongoClient()
         }
 
         inline fun <reified E>getDatabaseName(): String {
