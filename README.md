@@ -2,7 +2,7 @@
 
 ## What is Entity
 
-Entity is a Kotlin MongoDB ORM.
+Entity is a Kotlin MongoDB Interface.
 
 ## How does it work
 
