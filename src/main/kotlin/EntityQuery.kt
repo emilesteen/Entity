@@ -3,7 +3,7 @@ import org.bson.types.ObjectId
 
 class EntityQuery {
     companion object {
-        inline fun <reified E>findById(_id: ObjectId): E {
+        inline fun <reified E : Entity> findById(_id: ObjectId): E {
             val filter = BasicDBObject();
             filter["_id"] = _id
 
@@ -18,8 +18,7 @@ class EntityQuery {
             }
         }
 
-        inline fun <reified E>find(filter: BasicDBObject): ArrayList<E>
-        {
+        inline fun <reified E : Entity> find(filter: BasicDBObject): ArrayList<E> {
             val entities = arrayListOf<E>()
             val documents = EntityHelper
                 .getCollection<E>()
