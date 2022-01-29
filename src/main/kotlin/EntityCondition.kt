@@ -1,0 +1,3 @@
+class EntityCondition<E : EntityInterface> {
+}
+

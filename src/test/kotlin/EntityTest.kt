@@ -1,7 +1,5 @@
 import com.mongodb.BasicDBObject
 import entity.User
-import entity.UserName
-import entity.UserStatus
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -9,9 +7,9 @@ class EntityTest {
     @Test
     fun testEntityCreate() {
         var user = User(
-            UserName("Emile", "Steenkamp"),
+            User.Name("Emile", "Steenkamp"),
             23,
-            UserStatus.ACTIVE,
+            User.Status.ACTIVE,
             arrayListOf("ZA", "NL")
         ).insert()
 
@@ -20,22 +18,22 @@ class EntityTest {
         assertEquals("Emile", user.name.firstName)
         assertEquals("Steenkamp", user.name.lastName)
         assertEquals(23, user.age)
-        assertEquals(UserStatus.ACTIVE, user.status)
+        assertEquals(User.Status.ACTIVE, user.status)
         assertEquals(arrayListOf("ZA", "NL"), user.countriesVisited)
     }
 
     @Test
     fun testEntityUpdate() {
-        var user = User(UserName("Wikus", "van der Merwe"), 25).insert()
+        var user = User(User.Name("Wikus", "van der Merwe"), 25).insert()
         user = EntityQuery.findById(user._id)
 
-        assertEquals(UserStatus.ACTIVE, user.status)
+        assertEquals(User.Status.ACTIVE, user.status)
 
-        user.status = UserStatus.INACTIVE
+        user.status = User.Status.INACTIVE
         user = user.update()
         user = EntityQuery.findById(user._id)
 
-        assertEquals(UserStatus.INACTIVE, user.status)
+        assertEquals(User.Status.INACTIVE, user.status)
     }
 
     @Test
@@ -47,8 +45,16 @@ class EntityTest {
 
     @Test
     fun testEntityToString() {
-        val user = User(UserName("Willem", "Aggenbach"), 22)
+        val user = User(User.Name("Willem", "Aggenbach"), 22)
 
         println(user.toString())
+    }
+
+    fun testEntityQuery() {
+        val users = EntityQuery<User>()
+            .where(EntityQuery.Field(EntityQuery.Path(User::name, EntityQuery.Path(User.Name::firstName))) eq "Emile")
+            .where(User::age eq 10)
+            .where(User::status eq User.Status.ACTIVE)
+            .find<User>()
     }
 }
